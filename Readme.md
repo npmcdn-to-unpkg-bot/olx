@@ -6,10 +6,9 @@ Ubuntu 12.04,
 ## Install PHP
 Composer it is package manager, which will be using for downloading modules (like simple webserver on php)
 ```
-sudo apt-get install curl php5-cli git   
+sudo apt-get install php curl git   
 ```
 
-**php5-cli** - client, which allow run php scripts from command line, 
 **curl** is neccessary to install composer, 
 **git** is neccessary to install php5-cli
 

@@ -60,6 +60,11 @@ curl -sL https://deb.nodesource.com/setup | sudo bash -
 sudo apt-get install -y nodejs
 ```
 Check once more and node version must be 0.10
+Install npm (package manager)
+```
+sudo apt-get install npm
+```
+
 ####Complete instalation of dependencies
 Run this from folder where package.json is located
 ```

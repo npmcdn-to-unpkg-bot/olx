@@ -7,6 +7,8 @@ if ($short_connect->connect_errno!=false)
 	exit( "Cannot connect to MySql: (" . $short_connect->connect_errno . ") ");
 	}
 
+$short_connect->select_db('olx');
+
 
 function create_db()
 	{
@@ -19,7 +21,6 @@ function create_db()
 function create_table()
 	{
 	global $short_connect;
-	$short_connect->select_db('olx');
 	$qr = "
 		CREATE TABLE IF NOT EXISTS `adverts` (
   		  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -40,14 +41,14 @@ function create_table()
 function get_adverts()
 	{
 	global $short_connect;
-	$qr = "SELECT * FROM adverts WHERE Status!=2";
+	$qr = "SELECT * FROM adverts WHERE Status!=2;";
+	
 	$res = $short_connect->query($qr);
 	$res_arr = array();
-	
-	while($row = $res->fetch_array(MYSQL_ASSOC))
+	while($row = $res->fetch_array())
 		{
 		$res_arr[]=$row;
-		}
+		};
 	return json_encode($res_arr);
 	};
 
@@ -81,18 +82,17 @@ function update_advert($obj)
 	global $short_connect;
 
 	$qr = "UPDATE adverts SET 
-		Title='".$obj["data"]["id"]."',
-		Category = 'yhrg',
-		Age = 'ytre',
-		State = 'jhgfd',
-		Price = 300,
-		Date = '2015-06-07',
-		Description = 'nhbgvf'
-		 WHERE id=2";
+		Title='".$obj["data"]["Title"]."',
+		Category = '".$obj["data"]["Category"]."',
+		Age = '".$obj["data"]["Age"]."',
+		State = '".$obj["data"]["State"]."',
+		Price = ".$obj["data"]["Price"].",
+		Description = '".$obj["data"]["Description"]."'
+		WHERE id=".$obj["data"]["id"]."";
 
 	$res = $short_connect->query($qr);
 	
-	return 'OK';
+	return $obj["data"];
 
 	}
 

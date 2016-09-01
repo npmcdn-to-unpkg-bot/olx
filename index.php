@@ -34,7 +34,7 @@ $app->get('/',function(Request $request, Response $response)
 
 $app->get('/api/advert/get',function(Request $request, Response $response)
 	{
-	$res = get_adverts();	
+	$res = get_adverts();
 	$response->getBody()->write($res);
 	});
 
@@ -54,12 +54,12 @@ $app->post('/api/advert/add',function(Request $request, Response $response)
 	$response->getBody()->write(json_encode($res));
 	});
 
-
-
-$app->get('/test',function(Request $request, Response $response)
+$app->post('/api/advert/update',function(Request $request, Response $response)
 	{
-	$res = update_advert();	
-	$response->getBody()->write($res);
+
+	$res = $request->getParsedBody();
+	$res = update_advert($res);	
+	$response->getBody()->write(json_encode($res));
 	});
 
 

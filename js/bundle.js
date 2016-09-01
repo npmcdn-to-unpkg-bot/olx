@@ -4,7 +4,10 @@ var Container = React.createClass({
 	getInitialState:function()
 		{
 		return {
-		adverts:[]  //be empty, until new data from ajax
+		adverts:[],  //be empty, until new data from ajax
+		//below is object for editin (passed to add advert).	
+		//such construction makes possible mutually changing one object, because child obtain pointer to object and can access and change its properties
+		def_advert :{'shared_obj':'take_internal'} 
 
 		}
 
@@ -32,7 +35,7 @@ var Container = React.createClass({
 			{
 			this.state.spinner = false; //hide spinner
 			this.state.adverts = data;
-			this.forceUpdate();
+			setTimeout(function(){this.forceUpdate()}.bind(this),800);
 			}.bind(this),
 		   error:function(xhr,status,err)
 			{
@@ -63,7 +66,7 @@ var Container = React.createClass({
 			{
 			this.state.spinner = false; //hide spinner
 			this.state.adverts = this.state.adverts.filter(function(el){return el['id']!=idx});
-			this.forceUpdate();
+			setTimeout(function(){this.forceUpdate()}.bind(this),800);
 			}.bind(this),  //bind is necc to save context
 		   error:function(xhr,status,err)
 			{
@@ -77,16 +80,20 @@ var Container = React.createClass({
 			
 		},
 
+	//it is serving not only creating new advert, but updating also
 	add_advert:function(obj)
 		{
 		var d = {};
 		d['data'] = obj;
 		d['data']['DateTs'] = parseInt((new Date()).getTime()/1000);  //set new Date (when created)
 		d['data']['Date'] = (new Date(d['data']['DateTs']*1000)).toLocaleString();
+		
+		var url = obj['id']==''?'./api/advert/add':'./api/advert/update';
+
 		this.state.spinner = true;
 		this.forceUpdate();
 		$.post({
-		   url:'./api/advert/add',
+		   url:url,
 		   data:d,
 		   dataType:'json',
 		   ContentType:'application/json; charset=utf-8',
@@ -94,10 +101,22 @@ var Container = React.createClass({
 		   success:function(data)
 			{
 			this.state.spinner = false; //hide spinner
-			//returned id insert into newly created object and push it to array
-			obj['id'] = data['id'];
-			this.state.adverts.push($.extend(true,{},obj));
-			this.forceUpdate();
+			//if advert was added - add to list, if updated - substitude
+			if (obj['id']=='')  //created adver
+				{
+				//returned id insert into newly created object and push it to array
+				obj['id'] = data['id'];
+				this.state.adverts.push($.extend(true,{},obj));
+				}
+			else  //updated
+				{
+				var t = this.state.adverts.filter(function(el){return el['id']==obj['id']})[0];
+				$.extend(true,t,obj);
+				}
+	
+			setTimeout(function(){this.forceUpdate()}.bind(this),800);
+
+
 			}.bind(this),  //bind is necc to save context
 		   error:function(xhr,status,err)
 			{
@@ -111,9 +130,11 @@ var Container = React.createClass({
 			
 		},
 
-	update_advert:function(obj)
+	update_advert:function(idx)
 		{
-
+		var clone_obj = this.state.adverts.filter(function(el){return el['id']==idx})[0];
+		this.state.def_advert['shared_obj'] = $.extend(true,{},clone_obj);
+		this.forceUpdate();
 		},
 
 
@@ -129,7 +150,7 @@ var Container = React.createClass({
 		return (
 		<div className="main_container">
 			<Spinner show={this.state.spinner}/>
-			<AddAdvert methods={methods} obj={this.state.def_advert}/>			
+			<AddAdvert methods={methods} def_advert={this.state.def_advert}/>			
 			<ListAdverts data={this.state.adverts} methods={methods}/>
 		</div>
 		
@@ -156,7 +177,7 @@ var AddAdvert = React.createClass({
 
 		}},
 
-	cancel:function()
+	init_obj:function()
 		{
 		return {
 		//object which will be send to backend
@@ -173,7 +194,13 @@ var AddAdvert = React.createClass({
 
 		},
 
-
+	cancel:function()
+		{
+		this.state.adver_obj = this.init_obj();
+//		debugger;
+		this.props.def_advert['shared_obj'] = 'take_internal';
+		this.forceUpdate();
+		},
 
 	//handler firing when ONSELECT
 	select:function(section,e)
@@ -199,12 +226,13 @@ var AddAdvert = React.createClass({
 	save:function(e)
 		{
 		this.props.methods.add_advert(this.state.adver_obj);
+		this.state.adver_obj = this.init_obj();
+		this.props.def_advert['shared_obj'] = 'take_internal';  //reset object
 		},
 
 	render: function()
 		{
-
-		this.state.adver_obj = this.props.def_advert==undefined?(!this.state.adver_obj?this.cancel():this.state.adver_obj):this.props.def_advert;
+		this.state.adver_obj = this.props.def_advert['shared_obj']=='take_internal'?(!this.state.adver_obj?this.init_obj():this.state.adver_obj):this.props.def_advert['shared_obj'];
 		//complete CATEGORIES 
 		var categories = this.state.options['Categories'].map(
 		   function(el,idx){
@@ -221,7 +249,7 @@ var AddAdvert = React.createClass({
 			return <option key={idx} value={el}>{el}</option>
 		    });
 
-		//determine class of button
+		//determine class of button SAVE (disabled if not all fields completed)
 		var class_btn = this.is_disable()==true?'btn btn-primary disabled':'btn btn-primary';
 			
 			
@@ -248,22 +276,31 @@ var AddAdvert = React.createClass({
 			   <div className="form-group">
 
 				<label>Category</label>
-				<select className="form-control" onChange={this.select.bind(this,'Category')}>
-					<option value="1">Select one category...</option>
+				<select className="form-control" 
+					onChange={this.select.bind(this,'Category')} 
+					value={this.state.adver_obj["Category"]}
+					>
+					   <option value="">Select one category...</option>
 					{categories}
 				</select>
 			   </div>
 			   <div className="form-group">
 				<label>Age</label>
-				<select className="form-control" onChange={this.select.bind(this,'Age')}>
-					<option>Select one age...</option>
+				<select className="form-control" 
+					onChange={this.select.bind(this,'Age')} 
+					value={this.state.adver_obj["Age"]}
+					>
+					   <option value="">Select one age...</option>
 					{ages}
 				</select>
 			   </div>
 			   <div className="form-group">
 				<label>State</label>
-				<select className="form-control" onChange={this.select.bind(this,'State')}>
-					<option>Select one state...</option>
+				<select className="form-control" 
+					onChange={this.select.bind(this,'State')}
+					value={this.state.adver_obj['State']}
+					>
+					<option value="">Select one state...</option>
 					{states}
 				</select>
 			   </div>
@@ -279,6 +316,12 @@ var AddAdvert = React.createClass({
 					   >
 					</textarea>
 					<div className="btn_container">
+					  <a role="button"
+					      className="btn btn-default"
+					      onClick={this.cancel}
+					      >
+					      Cancel
+  					  </a>
 					  <a role="button"
 					      className={class_btn}
 					      onClick={this.save}
@@ -329,6 +372,15 @@ var Advert = React.createClass({
 		this.props.methods.remove_advert(idx);
 		},
 
+	upd_adver:function(e)
+		{
+		//disclose add advert window and scrol to top
+		$('#advert').collapse('show');
+		$('body').animate({'scrollTop':'0px'});
+		var idx = e.target.id;
+		this.props.methods.update_advert(idx);
+		},
+
 	render:function()
 		{
 		var obj = this.props.data;
@@ -338,7 +390,7 @@ var Advert = React.createClass({
 				<div className="btn_container">
 					<span 
 						id={obj['id']}
-						onClick={this.remove}
+						onClick={this.upd_adver}
 						className="glyphicon glyphicon-pencil"
 						>
 					</span>

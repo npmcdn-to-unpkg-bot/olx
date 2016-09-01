@@ -20,8 +20,42 @@
 		margin-top:10px;
 		}
 
+	#advert .form-group
+		{
+		width:90%;
+		margin-left:5%;
+		}
+
 	}
 
+@media(min-width:400px)
+	{
+	#advert .form-group
+		{
+		width:80%;
+		margin-left:10%;
+		}
+	}
+
+@media(min-width:500px)
+	{
+	#advert .form-group
+		{
+		width:70%;
+		margin-left:15%;
+		}
+	}
+
+
+
+@media(min-width:600px)
+	{
+	#advert .form-group
+		{
+		width:50%;
+		margin-left:25%;
+		}
+	}
 
 
 @media(min-width:768px)
@@ -44,6 +78,12 @@
 	.advert .property .name
 		{
 		width:auto;
+		}
+
+	#advert .form-group
+		{
+		width:auto;
+		margin-left:0%;
 		}
 
 	}
@@ -190,7 +230,15 @@
 .add_advert h1
 	{
 	cursor:pointer;
+	padding-left:10px;
 	}
+
+.add_advert h1:hover
+	{
+	color:#616161 !important;
+	background:#f1f1f1;
+	}
+
 
 .add_advert .row
 	{
@@ -229,6 +277,10 @@
 	text-align:right;
 	}
 
+.add_advert .btn_container a:nth-of-type(1)
+	{
+	margin-right:5px;
+	}
 
 /*///////////////////////////*/
 /*/////ADVERT///////////////*/
@@ -236,18 +288,18 @@
 .advert
 	{
 	margin-top:100px;
-	width:100%;
+	width:90%;
 	max-width:700px;
 	padding:0px 20px 20px 20px;	
 	margin-left:auto;
 	margin-right:auto;
 	position:relative;
-	box-shadow:0px 0px 5px rgb(241, 241, 241);
+	box-shadow:0px 0px 5px rgb(181, 181, 181);
 	}
 
 .advert:hover
 	{
-	box-shadow:0px 0px 5px rgb(207, 207, 207);
+	box-shadow:0px 0px 16px rgb(181, 181, 181);
 	}
 
 .advert:hover .btn_container
@@ -268,7 +320,7 @@
 	text-align:center;
 	/*color:white;*/
 	font-size:18px;
-	background:rgb(231, 232, 255);
+	background:rgb(196, 220, 251);
 	transform:translateY(5px);
 	-webkit-transition:transform ease 0.7s;
 	-ms-transition:transform ease 0.7s;

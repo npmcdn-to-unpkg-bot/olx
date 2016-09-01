@@ -3,15 +3,16 @@ My environment:
 Ubuntu 12.04, 
 
 
-## H1 1 STEP
-First of all install php and composer.
+## 1 STEP  
+#####First of all install php and composer.
 Composer it is package manager, which will be using for downloading modules (like simple webserver on php)
 
 
 ```
 sudo apt-get install curl php5-cli git   
 ```
-php5-cli - allow run php scripts from command line, curl is neccessary to install composer, git is neccessary to install php5-cli
+
+```php5-cli ```- allow run php scripts from command line, curl is neccessary to install composer, git is neccessary to install php5-cli
 
 
 Install composer:

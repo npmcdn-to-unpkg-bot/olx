@@ -80,7 +80,7 @@ Run from command line
 sudo apt-get install mysql-server
 ```
 
-During instalation enter admin user name and his password
+During instalation enter user name **root** and his password also **root**
 More details you can read here
 http://help.ubuntu.ru/wiki/mysql
 

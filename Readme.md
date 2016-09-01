@@ -61,9 +61,11 @@ sudo apt-get install -y nodejs
 ```
 Check once more and node version must be 0.10
 ####Complete instalation of dependencies
+Run this from folder where package.json is located
 ```
-npm install from folder where package.json is located
+npm install 
 ```
+
 
 ## Install mysql
 Run from command line

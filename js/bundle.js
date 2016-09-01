@@ -4,27 +4,20 @@ var Container = React.createClass({
 	getInitialState:function()
 		{
 		return {
-		adverts:[
-			{'id':'11','Category':'Food',"Age":"Brandnew",'State':'Perfect',"Price":'130','Description':'rferfer ref'},
-			{'id':'12','Category':'Food',"Age":"Brandnew",'State':'Perfect',"Price":'130','Description':'rferfer ref'}
-
-		]
+		adverts:[]  //be empty, until new data from ajax
 
 		}
 
 	
 		},
 
-
+	//when view makes first start - get adverts
 	componentDidMount:function()
 		{
 		this.get_adverts();
-		
 		},
 
 
-	//SET REQUESTS TO BACKEND
-	//GET ADVERT
 	//obtain all adverts from database
 	get_adverts:function()
 		{
@@ -38,9 +31,8 @@ var Container = React.createClass({
 		   success:function(data)
 			{
 			this.state.spinner = false; //hide spinner
+			this.state.adverts = data;
 			this.forceUpdate();
-			console.log(data);
-			
 			}.bind(this),
 		   error:function(xhr,status,err)
 			{
@@ -53,13 +45,77 @@ var Container = React.createClass({
 
 		},
 
-
+	//this methods will be calling from bottom(child) classes
+	//to make possible change adverts list and make re-render of entire view (all components)
 	remove_advert:function(idx)
 		{
-		console.log('ff',idx);
-		this.state.adverts = this.state.adverts.filter(function(el){return el['id']!=idx});
+		var d = {};
+		d['data'] = {'id':idx};
+		this.state.spinner = true;
 		this.forceUpdate();
+		$.post({
+		   url:'./api/advert/remove',
+		   data:d,
+		   dataType:'json',
+		   ContentType:'application/json; charset=utf-8',
+		   cashe:false,
+		   success:function(data)
+			{
+			this.state.spinner = false; //hide spinner
+			this.state.adverts = this.state.adverts.filter(function(el){return el['id']!=idx});
+			this.forceUpdate();
+			}.bind(this),  //bind is necc to save context
+		   error:function(xhr,status,err)
+			{
+			this.state.spinner = false;
+			this.forceUpdate();
+			alert('Something happened wrong when obtaining adverts from database! '+err);
+			}.bind(this)
+
+		   })	
+
+			
 		},
+
+	add_advert:function(obj)
+		{
+		var d = {};
+		d['data'] = obj;
+		d['data']['DateTs'] = parseInt((new Date()).getTime()/1000);  //set new Date (when created)
+		d['data']['Date'] = (new Date(d['data']['DateTs']*1000)).toLocaleString();
+		this.state.spinner = true;
+		this.forceUpdate();
+		$.post({
+		   url:'./api/advert/add',
+		   data:d,
+		   dataType:'json',
+		   ContentType:'application/json; charset=utf-8',
+		   cashe:false,
+		   success:function(data)
+			{
+			this.state.spinner = false; //hide spinner
+			//returned id insert into newly created object and push it to array
+			obj['id'] = data['id'];
+			this.state.adverts.push($.extend(true,{},obj));
+			this.forceUpdate();
+			}.bind(this),  //bind is necc to save context
+		   error:function(xhr,status,err)
+			{
+			this.state.spinner = false;
+			this.forceUpdate();
+			alert('Something happened wrong when obtaining adverts from database! '+err);
+			}.bind(this)
+
+		   })	
+
+			
+		},
+
+	update_advert:function(obj)
+		{
+
+		},
+
 
 	render:function()
 		{
@@ -67,10 +123,13 @@ var Container = React.createClass({
 		//Aim - from child change adverts array (by calling particular method) and re-render view
 		var methods = {};
 		methods['remove_advert'] = this.remove_advert;
+		methods['update_advert'] = this.update_advert;
+		methods['add_advert'] = this.add_advert;
+	
 		return (
 		<div className="main_container">
 			<Spinner show={this.state.spinner}/>
-			<AddAdvert methods={methods} />			
+			<AddAdvert methods={methods} obj={this.state.def_advert}/>			
 			<ListAdverts data={this.state.adverts} methods={methods}/>
 		</div>
 		
@@ -85,10 +144,23 @@ var AddAdvert = React.createClass({
 	getInitialState:function()
 		{
 		return {
-		test:['ferfer'],
-		//object which will be send to backend
-		adver_obj:
+		adver_obj:false,
+
+		//options
+		options:
 		  {
+		  'Categories':['Food','Clothes','For Auto','Gadgets'],
+		  'Age':['Brandnew','1 year old', '2 years old','3 years old', '3+ years old'],
+		  'State':['Perfect', 'Good', 'Singificanlty used', 'Not working']
+		  }
+
+		}},
+
+	cancel:function()
+		{
+		return {
+		//object which will be send to backend
+		  'id':'',
 		  'Category': '',
 		  'Age':'',
 		  'State':'',
@@ -96,18 +168,9 @@ var AddAdvert = React.createClass({
 		  'Price':'',
 		  'Description':'',
 		  'Title':''
-		  },
-		//options
-		options:
-		  {
-		  'Categories':['Food','Clothes','For Auto','Gadgets'],
-		  'Age':['Brandnew','1 year old', '2 years old','3 years old', '3+ years old'],
-		  'State':['Perfect', 'Good', 'Singificanlty used', 'Not working']
-		  },
-		spinner:false
-
-
 		  }
+
+
 		},
 
 
@@ -125,7 +188,7 @@ var AddAdvert = React.createClass({
 		{
 		for (var each in this.state.adver_obj)
 			{
-			if (this.state.adver_obj[each]==''&&each!='Date')
+			if (this.state.adver_obj[each]==''&&each!='Date'&&each!='id')
 				{
 				return true;
 				}	
@@ -135,12 +198,13 @@ var AddAdvert = React.createClass({
 
 	save:function(e)
 		{
-		console.log(this.state.adver_obj);
+		this.props.methods.add_advert(this.state.adver_obj);
 		},
 
 	render: function()
 		{
 
+		this.state.adver_obj = this.props.def_advert==undefined?(!this.state.adver_obj?this.cancel():this.state.adver_obj):this.props.def_advert;
 		//complete CATEGORIES 
 		var categories = this.state.options['Categories'].map(
 		   function(el,idx){
@@ -166,7 +230,6 @@ var AddAdvert = React.createClass({
 		<div className="add_advert">
 		 <h1 role="button" data-target="#advert" data-toggle="collapse" >Add Advertisement</h1>
 		   <div id="advert" className="row collapse">
-			<Spinner show={this.state.spinner} />
 			<form className="col-sm-6">
 			   <div className="form-group">
 				<label>Title</label>
@@ -263,9 +326,7 @@ var Advert = React.createClass({
 	remove:function(e)
 		{
 		var idx = e.target.id;
-		var new_el = {'id':'12','Category':'Food',"Age":"Brandnew",'State':'Perfect',"Price":'130','Description':'rferfer ref'};
 		this.props.methods.remove_advert(idx);
-		
 		},
 
 	render:function()
@@ -311,7 +372,7 @@ var Advert = React.createClass({
 
 
 				<div className="title">
-					<h2>Sell gadget <small> 2016-14-12</small></h2>
+					<h2>{obj['Title']} <small> {obj['Date']}</small></h2>
 					<div className="price">
 					   <div>PRICE</div>
 					   <div>{obj['Price']}$</div>
@@ -339,7 +400,7 @@ var Advert = React.createClass({
 var Spinner = React.createClass(
 	{
 	render:function(){
-		var cls_name = this.props.show===true?'':'hidden';
+		var cls_name = this.props.show===true?'':'hidden_s';
 		cls_name = 'spinner '+cls_name;
 		return (
 			<div className={cls_name}>

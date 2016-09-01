@@ -3,7 +3,7 @@ My environment:
 Ubuntu 12.04, 
 
 
-##1 STEP
+## H1 1 STEP
 First of all install php and composer.
 Composer it is package manager, which will be using for downloading modules (like simple webserver on php)
 

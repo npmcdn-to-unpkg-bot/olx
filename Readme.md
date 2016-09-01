@@ -96,36 +96,37 @@ mysql -u root -p
 ```
 
 ####Some commands (do not forget to add ';' at the end of script)
-
++ *do not forget ";" at the end of query*
 ```
 mysql SHOW DATABASES;
 ```
-do not forget ";" at the end of query
 
++ *select one database, e.g. 'mysql'*
 ```
-mysql use mysql;  //select
+mysql use mysql;
 ``` 
-one database, e.g. 'mysql'
 
++ *show name of database currently is selected*
 ```
 mysql SELECT DATABASE();
 ```
-show name of database currently is selected
 
++ *show list of tables from currently selected database*
 ```
 mysql SHOW TABLES; 
 ```
-show list of tables from currently selected database
 
++ *exit from terminal client*
 ```
 mysql exit
 ``` 
-exit from terminal client
 
-To check if database is run - from terminal
+
+**To check if database is run - from terminal**
 ```
 netstat -at
 ``` 
+
 within list try to find localhost:mysql (mysql - means standart port or 3306)
 
 If it is not started - run form terminal
@@ -135,6 +136,11 @@ sudo service mysql start
 To stop server run
 ```
 udo service mysql stop
+```
+##Install mysqpli for php
+Run from command line
+```
+sudo-apt-get install php-mysql
 ```
 
 

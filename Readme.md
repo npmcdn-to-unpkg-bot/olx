@@ -1,7 +1,9 @@
 
 My environment:
-Ubuntu 12.04, 
+Ubuntu 12.04 (some installation will be another, e.g. php5-mysql instead of php-mysql for Ub 16.), 16.04 (use php 7) 
 
+
+[DEMO](http://46.101.160.102:8080/)
 
 ## Install PHP
 Composer it is package manager, which will be using for downloading modules (like simple webserver on php)

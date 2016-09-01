@@ -99,20 +99,28 @@ mysql -u root -p
 
 ```
 mysql SHOW DATABASES;
-``` do not forget ";" at the end of query
+```
+do not forget ";" at the end of query
 
 ```
 mysql use mysql;  //select
-``` one database, e.g. 'mysql'
+``` 
+one database, e.g. 'mysql'
+
 ```
 mysql SELECT DATABASE();
-``` show name of database currently is selected
+```
+show name of database currently is selected
+
 ```
 mysql SHOW TABLES; 
-```show list of tables from currently selected database
-``
-`mysql exit
-``` exit from terminal client
+```
+show list of tables from currently selected database
+
+```
+mysql exit
+``` 
+exit from terminal client
 
 To check if database is run - from terminal
 ```
@@ -121,7 +129,9 @@ netstat -at
 within list try to find localhost:mysql (mysql - means standart port or 3306)
 
 If it is not started - run form terminal
-```sudo service mysql start```
+```
+sudo service mysql start
+```
 To stop server run
 ```
 udo service mysql stop
@@ -134,5 +144,5 @@ cd /olx/
 and from this directory run 
 ```
 php -S localhost:8080
-``
+```
 After - input in browser localhost:8080 and JOIN!

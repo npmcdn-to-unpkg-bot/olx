@@ -17,6 +17,11 @@ sudo apt-get install php curl git
 Run from commnand line
 ```curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer```
 
+## Clone repository
+Goto your project folder (where do you want to locate your project)
+and execute from command line
+```git clone https://github.com/andrii333/olx```
+
 
 ## Install dependencies
 Run from command line:

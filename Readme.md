@@ -24,7 +24,7 @@ and execute from command line
 
 
 ## Install dependencies
-Run from command line:
+Goto olx folder and run from command line:
 ```php composer.phar install``` 
 **composer.phar** - file, which can pull packages according to the compose.json
 

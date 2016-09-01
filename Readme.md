@@ -74,7 +74,10 @@ npm install
 
 ## Install mysql
 Run from command line
-```sudo apt-get install mysql-server```
+```
+sudo apt-get install mysql-server
+```
+
 During instalation enter admin user name and his password
 More details you can read here
 http://help.ubuntu.ru/wiki/mysql
@@ -83,31 +86,53 @@ http://help.ubuntu.ru/wiki/mysql
 You can also install client (GUI or for terminal) to observe you database.
 
 mysql client for terminal
-```sudo apt-get install mysql-client```
+```
+sudo apt-get install mysql-client
+```
 
 Then you can start it like  (-u prior username, which is root)
-```mysql -u root -p```
+```
+mysql -u root -p
+```
 
 ####Some commands (do not forget to add ';' at the end of script)
 
-```mysql SHOW DATABASES;``` do not forget ";" at the end of query
-```mysql use mysql;  //select``` one database, e.g. 'mysql'
-```mysql SELECT DATABASE();``` show name of database currently is selected
-```mysql SHOW TABLES; ```show list of tables from currently selected database
-```mysql exit ``` exit from terminal client
+```
+mysql SHOW DATABASES;
+``` do not forget ";" at the end of query
+
+```
+mysql use mysql;  //select
+``` one database, e.g. 'mysql'
+```
+mysql SELECT DATABASE();
+``` show name of database currently is selected
+```
+mysql SHOW TABLES; 
+```show list of tables from currently selected database
+``
+`mysql exit
+``` exit from terminal client
 
 To check if database is run - from terminal
-```netstat -at``  within list try to find localhost:mysql (mysql - means standart port or 3306)
+```
+netstat -at
+``` 
+within list try to find localhost:mysql (mysql - means standart port or 3306)
 
 If it is not started - run form terminal
 ```sudo service mysql start```
 To stop server run
-```sudo service mysql stop```
+```
+udo service mysql stop
+```
 
 
 ## Run server
 To run micro server go to project folder folder
 cd /olx/  
 and from this directory run 
-```php -S localhost:8080```
+```
+php -S localhost:8080
+``
 After - input in browser localhost:8080 and JOIN!

@@ -15,17 +15,23 @@ sudo apt-get install php curl git
 ## Clone repository
 Goto your project folder (where do you want to locate your project)
 and execute from command line
-```git clone https://github.com/andrii333/olx```
+```
+git clone https://github.com/andrii333/olx
+```
 
 ## Install composer:
 Goto olx folder and run from commnand line
-```curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer```
+```
+curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+```
 
 
 ## Install dependencies
 Goto olx folder and run from command line:
-```php composer.phar install``` 
-**composer.phar** - file, which can pull packages according to the compose.json
+```
+composer install
+``` 
+
 
 If any problems with installation of dependencies - try to check version of php (from terminal php -v), must be php.5.5.
 If it is 5.3 make updates:
